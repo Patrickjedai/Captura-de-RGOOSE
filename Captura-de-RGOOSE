@@ -1,0 +1,21 @@
+import pyshark
+
+interface_de_rede = "eth0"
+
+try:
+    cap = pyshark.LiveCapture(interface=interface_de_rede, display_filter="goose")
+
+    for i, pacote in enumerate(cap.sniff_continuously(packet_count=2000)):
+        if hasattr(pacote, 'sniff_time'):
+            tempo_chegada = pacote.sniff_time
+            print(f"Pacote {i + 1} - Tempo de chegada: {tempo_chegada}")
+
+        if hasattr(pacote, 'frame_info') and hasattr(pacote.frame_info, 'time_epoch'):
+            tempo_envio = pacote.frame_info.time_epoch
+            print(pacote[1].t)
+
+        # Adicione mais detalhes específicos do Ranger conforme necessário
+        # Exemplo: print(f"Pacote {i + 1} - Detalhes do Ranger: {pacote['ranger'].field_name}")
+
+except Exception as e:
+    print("Erro ao capturar pacotes:", str(e))
